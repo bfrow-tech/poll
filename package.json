@@ -1,0 +1,28 @@
+{
+  "name": "@bfrow-tech/poll",
+  "publishConfig": { 
+    "registry": "https://npm.pkg.github.com/bfrow-tech" 
+  },
+  "version": "1.0.0",
+  "repository": "git://github.com/bfrow-tech/poll.git",
+  "main": "./dist/bundle.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development --watch"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.2.0",
+    "postcss-loader": "^3.0.0",
+    "postcss-nested": "^4.2.3",
+    "style-loader": "^1.2.1",
+    "svg-inline-loader": "^0.8.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "dependencies": {
+    "nanoid": "^3.1.12"
+  }
+}

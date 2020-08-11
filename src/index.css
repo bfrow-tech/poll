@@ -1,0 +1,106 @@
+.cdx-poll {
+    padding-top: 13px;
+    padding-bottom: 20px;
+}
+
+.cdx-poll-wrap-title {
+    margin-bottom: 20px;
+}
+
+.cdx-poll-title {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #000;
+    text-transform: uppercase;
+    border: 0;
+    outline: none;
+    background: transparent;
+}
+
+.cdx-poll-wrap-option {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.cdx-poll-option {
+    width: 100%;
+    height: 50px;
+    padding-left: 20px;
+    padding-right: 40px;
+    font-family: inherit;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #000;
+    text-transform: uppercase;    
+    border: 1px solid #c4c4c4;
+    border-radius: 3px;
+}
+
+.cdx-poll-remove-icon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 20px;
+    margin: auto;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+
+    svg {
+        vertical-align: top;
+    }
+}
+
+.cdx-poll-settings {
+    font-size: 0;
+}
+
+.cdx-poll-wrap-checkbox {
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-right: 10px;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+.cdx-poll-checkbox {
+    display: none;
+
+    &:checked + .cdx-poll-pseudoCheckbox {
+        svg {
+            display: block;
+        }
+    }
+}
+
+.cdx-poll-pseudoCheckbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    width: 18px;;
+    height: 18px;
+    border: 1px solid #c4c4c4;
+    background: #fff;
+    border-radius: 3px;
+    margin-right: 7px;
+
+    svg {
+        display: none;
+    }
+}
+
+.cdx-poll-checkbox-name {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 1.6rem;
+    color: #333;
+}
