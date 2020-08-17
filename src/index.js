@@ -104,13 +104,13 @@ export default class Poll {
         if (options.length) {
             const removeButton = make('div', this.CSS.removeIcon, {innerHTML: RemoveIcon});
             wrapper.appendChild(removeButton);
-            removeButton.addEventListener('click', this.removeSelf.bind(this), false)
+            removeButton.addEventListener('click', this.removeSelf.bind(this))
         }
 
         wrapper.appendChild(option);
-        option.addEventListener('blur', this.onBlurInput.bind(this, id), false)
-        option.addEventListener('keyup', this.onChangeInput.bind(this), false)
-        option.addEventListener('keydown', this.optionHandler.bind(this), false)
+        option.addEventListener('blur', this.onBlurInput.bind(this, id))
+        option.addEventListener('keyup', this.onChangeInput.bind(this))
+        option.addEventListener('keydown', this.optionHandler.bind(this))
         
         this.nodes.options.appendChild(wrapper);
     }
@@ -139,7 +139,7 @@ export default class Poll {
         wrapper.appendChild(checkboxName);
 
         parentNode.appendChild(wrapper);
-        checkbox.addEventListener('change', this.checkboxHandler.bind(this), false);
+        checkbox.addEventListener('change', this.checkboxHandler.bind(this));
     }
 
     /**
@@ -223,7 +223,6 @@ export default class Poll {
     set data(data) {
         if (Object.values(data).length === 0) return;
 
-        console.log('set data', data)
         this._data = data;
     }
 
