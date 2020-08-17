@@ -146,7 +146,12 @@ export default class Poll {
      */
     onChangeInput(key, {target: {value}}) {
         if (value !== '') {
-            this._data.items.push({key, value})
+            const items = [...this._data.items];
+
+            this._data.items = items.map(item => {
+                if (item.key === key) return {...item, value}
+                return item 
+            })
         }
     }
 
