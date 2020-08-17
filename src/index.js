@@ -108,7 +108,8 @@ export default class Poll {
         }
 
         wrapper.appendChild(option);
-        option.addEventListener('blur', this.onChangeInput.bind(this, id), false)
+        option.addEventListener('blur', this.onBlurInput.bind(this, id), false)
+        option.addEventListener('keyup', this.onChangeInput.bind(this), false)
         option.addEventListener('keydown', this.optionHandler.bind(this), false)
         
         this.nodes.options.appendChild(wrapper);
@@ -142,9 +143,9 @@ export default class Poll {
     }
 
     /**
-     * Called when user typing in option input and set value in data
+     * Called after lose focus on input
      */
-    onChangeInput(key, {target: {value}}) {
+    onBlurInput(key, {target: {value}}) {
         if (value !== '') {
             const items = [...this._data.items];
 
@@ -155,15 +156,17 @@ export default class Poll {
         }
     }
 
+    onChangeInput({target: {value}}) {
+        if (value !== '') {
+            this.addOptionInput();
+        }
+    }
+
     /**
      * Called when user typing in option input, and call methods by keys
      */
     optionHandler(event) {
         const [ENTER, BACKSPACE] = [13, 8]; // key codes
-
-        if (event.target.value !== '') {
-            this.addOptionInput();
-        }
 
         switch (event.keyCode) {      
             case BACKSPACE:
@@ -191,10 +194,6 @@ export default class Poll {
             event.preventDefault();
             event.stopPropagation();
             this.removeSelf(event);
-
-            if (options.length !== 1) {
-                options[options.length - 2].focus();
-            }
         }
     }
 

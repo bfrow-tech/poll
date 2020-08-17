@@ -30,7 +30,7 @@
     width: 100%;
     height: 50px;
     padding-left: 20px;
-    padding-right: 40px;
+    padding-right: 60px;
     font-family: inherit;
     font-size: 1.4rem;
     font-weight: 700;
@@ -39,21 +39,27 @@
     text-transform: uppercase;    
     border: 1px solid #c4c4c4;
     border-radius: 3px;
+
+    /* for ios device to prevent zoom (16px minimum to prevent zoom) */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        &,
+        &:focus {
+            font-size: 1.6rem;
+        }
+    }
 }
 
 .cdx-poll-remove-icon {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 20px;
-    margin: auto;
-    width: 13px;
-    height: 13px;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 50px;
     cursor: pointer;
-
-    svg {
-        vertical-align: top;
-    }
 }
 
 .cdx-poll-settings {
