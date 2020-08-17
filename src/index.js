@@ -147,12 +147,19 @@ export default class Poll {
      */
     onBlurInput(key, {target: {value}}) {
         if (value !== '') {
-            const items = [...this._data.items];
+            let items = [...this._data.items];
+            const isFoundItem = items.find(item => item.key === key);
 
-            this._data.items = items.map(item => {
-                if (item.key === key) return {...item, value}
-                return item 
-            })
+            if (isFoundItem) {
+                items = items.map(item => {
+                    if (item.key === key) return {...item, value}
+                    return item
+                });
+            } else {
+                items.push({key, value})
+            }
+
+            this._data.items = items;
         }
     }
 
