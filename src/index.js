@@ -25,14 +25,12 @@ export default class Poll {
         this.nodes = {
             wrapper: make('div', this.CSS.wrapper),
             wrapperTitle: make('div', this.CSS.wrapperTitle),
-            title: make('input', this.CSS.title, {name: 'title', value: data.title || '', type:'text', placeholder: 'Add title', autocomplete: 'off'}),
             options: make('div', this.CSS.wrapperOptions),
             settings: make('div', this.CSS.settings)
         }
 
-        this.nodes.wrapperTitle.appendChild(this.nodes.title);
         this.nodes.wrapper.appendChild(this.nodes.wrapperTitle);
-        this.nodes.wrapper.append(this.nodes.options);  
+        this.nodes.wrapper.appendChild(this.nodes.options);  
         
         this._data = {
             title: '',
@@ -77,12 +75,14 @@ export default class Poll {
      * Init method
      */
     render() {
+        
+        this.addTitleInput();
+
         if (this._data.items.length > 0) {
             this._data.items.forEach(item => {
                 this.addOptionInput(item);
             });
         }
-
         this.addOptionInput();
         
         this.addSettings();
@@ -108,7 +108,7 @@ export default class Poll {
         }
 
         wrapper.appendChild(option);
-        option.addEventListener('blur', this.onBlurInput.bind(this, id))
+        option.addEventListener('blur', this.onBlurOptionInput.bind(this, id))
         option.addEventListener('keyup', this.onChangeInput.bind(this))
         option.addEventListener('keydown', this.optionHandler.bind(this))
         
@@ -116,10 +116,22 @@ export default class Poll {
     }
 
     /**
+     * Create UI title
+     */
+    addTitleInput() {
+        const title = make('input', this.CSS.title, {name: 'title', value: this._data.title || '', type:'text', placeholder: 'Add title', autocomplete: 'off'});
+
+        title.addEventListener('blur', this.onBlurTitleInput.bind(this))
+        title.addEventListener('keydown', this.titleHandler.bind(this))
+
+        this.nodes.wrapperTitle.appendChild(title);
+    }
+
+    /**
      * Create UI checkbox
      */
     addSettings() {
-        this.appendCheckBox(this.nodes.settings, {title: 'Multiple choise', name: 'isMultiple'});
+        this.appendCheckBox(this.nodes.settings, {title: 'Multiple choice', name: 'isMultiple'});
         this.appendCheckBox(this.nodes.settings, {title: 'Anonymous poll', name: 'isPublic'})
 
         this.nodes.wrapper.appendChild(this.nodes.settings);
@@ -143,9 +155,16 @@ export default class Poll {
     }
 
     /**
-     * Called after lose focus on input
+     * Called after lose focus on title input
      */
-    onBlurInput(key, {target: {value}}) {
+    onBlurTitleInput({target: {value}}) {
+        this._data.title = value;
+    }
+
+    /**
+     * Called after lose focus on option input
+     */
+    onBlurOptionInput(key, {target: {value}}) {
         if (value !== '') {
             let items = [...this._data.items];
             const isFoundItem = items.find(item => item.key === key);
@@ -185,6 +204,25 @@ export default class Poll {
     }
 
     /**
+     * Called when user typing in option input, and call methods by keys
+     */
+    titleHandler(event) {
+        const [ENTER] = [13]; // key codes
+
+        switch (event.keyCode) {      
+            case ENTER:
+                event.preventDefault();
+                event.stopPropagation();
+                const options = this.nodes.options.querySelectorAll(`.${this.CSS.option}`);
+                options[0].focus()
+
+                break;
+            default: 
+                break;
+        }
+    }
+
+    /**
      * Called when checbox changed state, set checkbox state in data 
      */
     checkboxHandler({target: {name, checked}}) {
@@ -196,8 +234,6 @@ export default class Poll {
      */
     backspace(event) {
         if (event.target.value === '') {
-            const options = this.nodes.options.querySelectorAll(`.${this.CSS.option}`);
-
             event.preventDefault();
             event.stopPropagation();
             this.removeSelf(event);
@@ -245,10 +281,6 @@ export default class Poll {
      * Save date for send
      */
     save(blockContent) {
-        const title = blockContent.querySelector(`.${this.CSS.title}`);
-        
-        this._data.title = title.value
-
         return this.data;
     }
 }
