@@ -36,7 +36,7 @@ export default class Poll {
             title: '',
             items: [],
             uid: data.uid || nanoid(13),
-            isPublic: false,
+            isAnonymous: false,
             isMultiple: false,
         }
 
@@ -132,7 +132,7 @@ export default class Poll {
      */
     addSettings() {
         this.appendCheckBox(this.nodes.settings, {title: 'Multiple choice', name: 'isMultiple'});
-        this.appendCheckBox(this.nodes.settings, {title: 'Anonymous poll', name: 'isPublic'})
+        this.appendCheckBox(this.nodes.settings, {title: 'Anonymous poll', name: 'isAnonymous'})
 
         this.nodes.wrapper.appendChild(this.nodes.settings);
     }
