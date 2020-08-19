@@ -94,22 +94,35 @@ export default class Poll {
     addOptionInput(item) {
         const options = this.nodes.options.querySelectorAll(`.${this.CSS.option}`);
 
-        if (options.length >= 10 || (options[options.length - 1] && options[options.length - 1].value === '' && !item)) return;
+        if (options.length >= 10 || (options[options.length - 1] && options[options.length - 1].innerHTML === '' && !item)) return;
 
         const wrapper = make('div', this.CSS.wrapperOption)
         const id = item ? item.key : `a${Date.now() / 1000 | 0}${options.length}`;
-        const option = make('input', this.CSS.option, {name: id, type:'text', value: item ? item.value : '', placeholder: 'add option', autocomplete: 'off'});
+        const option = make('div', this.CSS.option, {
+            contentEditable: true, 
+            innerHTML: item ? item.value : '',
+        });
+        option.setAttribute('data-name', id)
+        option.setAttribute('data-placeholder', 'Add option')
 
         if (options.length) {
             const removeButton = make('div', this.CSS.removeIcon, {innerHTML: RemoveIcon});
             wrapper.appendChild(removeButton);
-            removeButton.addEventListener('click', this.removeSelf.bind(this))
+            removeButton.addEventListener('click', (e) => {
+                this.removeSelf(e);
+            })
         }
 
         wrapper.appendChild(option);
-        option.addEventListener('blur', this.onBlur.bind(this))
-        option.addEventListener('keyup', this.onChangeInput.bind(this))
-        option.addEventListener('keydown', this.optionHandler.bind(this))
+        option.addEventListener('blur', (e) => {
+            this.onBlur(e);
+        })
+        option.addEventListener('keyup', (e) => {
+            this.onChangeInput(e);
+        })
+        option.addEventListener('keydown', (e) => {
+            this.optionHandler(e);
+        })
         
         this.nodes.options.appendChild(wrapper);
     }
@@ -118,10 +131,19 @@ export default class Poll {
      * Create UI title
      */
     addTitleInput() {
-        const title = make('input', this.CSS.title, {name: 'title', value: this._data.title || '', type:'text', placeholder: 'Add title', autocomplete: 'off'});
+        const title = make('div', this.CSS.title, {
+            contentEditable: true,
+            innerHTML: this._data.title || '',
+        });
+        title.setAttribute('data-name', 'title');
+        title.setAttribute('data-placeholder', 'Add title');
 
-        title.addEventListener('blur', this.onBlur.bind(this))
-        title.addEventListener('keydown', this.titleHandler.bind(this))
+        title.addEventListener('blur', (e) => {
+            this.onBlur(e);
+        })
+        title.addEventListener('keydown', (e) => {
+            this.titleHandler(e);
+        })
 
         this.nodes.wrapperTitle.appendChild(title);
     }
@@ -150,14 +172,15 @@ export default class Poll {
         wrapper.appendChild(checkboxName);
 
         parentNode.appendChild(wrapper);
-        checkbox.addEventListener('change', this.checkboxHandler.bind(this));
+        checkbox.addEventListener('change', (e) => {
+            this.checkboxHandler(e);
+        });
     }
 
     /**
      * Called after lose focus on title input
      */
-    onBlur({target: {value, name}}) {
-
+    onBlur({target: {dataset: {name}, innerHTML: value}}) {
         if (name === 'title') {
             this._data[name] = value;
         } else {
@@ -178,7 +201,7 @@ export default class Poll {
         }
     }
 
-    onChangeInput({target: {value}}) {
+    onChangeInput({target: {innerHTML: value}}) {
         if (value !== '') {
             this.addOptionInput();
         }
@@ -228,8 +251,8 @@ export default class Poll {
     /**
      * Called after press BACKSPACE, if option is empty then remove option and change focus on last option
      */
-    backspace(event) {
-        if (event.target.value === '') {
+    backspace({target: {innerHTML: value}}) {
+        if (value === '') {
             event.preventDefault();
             event.stopPropagation();
             this.removeSelf(event);
