@@ -1,3 +1,6 @@
+/**
+ * Utility method with help create element
+ */
 export const make = (tag, classNames = null, attributes = {}) => {
     const el = document.createElement(tag);
 

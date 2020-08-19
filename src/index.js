@@ -66,7 +66,6 @@ export default class Poll {
             pseudoCheckbox: 'cdx-poll-pseudoCheckbox',
             checkboxName: 'cdx-poll-checkbox-name',
             
-
             removeIcon: 'cdx-poll-remove-icon',
         };
     };
@@ -75,15 +74,15 @@ export default class Poll {
      * Init method
      */
     render() {
-        
         this.addTitleInput();
 
         if (this._data.items.length > 0) {
             this._data.items.forEach(item => {
                 this.addOptionInput(item);
             });
+        } else {
+            this.addOptionInput();
         }
-        this.addOptionInput();
         
         this.addSettings();
         return this.nodes.wrapper;
@@ -99,7 +98,7 @@ export default class Poll {
 
         const wrapper = make('div', this.CSS.wrapperOption)
         const id = item ? item.key : `a${Date.now() / 1000 | 0}${options.length}`;
-        const option = make('input', this.CSS.option, {name: 'option', type:'text', value: item ? item.value : '', placeholder: 'add option', autocomplete: 'off'});
+        const option = make('input', this.CSS.option, {name: id, type:'text', value: item ? item.value : '', placeholder: 'add option', autocomplete: 'off'});
 
         if (options.length) {
             const removeButton = make('div', this.CSS.removeIcon, {innerHTML: RemoveIcon});
@@ -108,7 +107,7 @@ export default class Poll {
         }
 
         wrapper.appendChild(option);
-        option.addEventListener('blur', this.onBlurOptionInput.bind(this, id))
+        option.addEventListener('blur', this.onBlur.bind(this))
         option.addEventListener('keyup', this.onChangeInput.bind(this))
         option.addEventListener('keydown', this.optionHandler.bind(this))
         
@@ -121,7 +120,7 @@ export default class Poll {
     addTitleInput() {
         const title = make('input', this.CSS.title, {name: 'title', value: this._data.title || '', type:'text', placeholder: 'Add title', autocomplete: 'off'});
 
-        title.addEventListener('blur', this.onBlurTitleInput.bind(this))
+        title.addEventListener('blur', this.onBlur.bind(this))
         title.addEventListener('keydown', this.titleHandler.bind(this))
 
         this.nodes.wrapperTitle.appendChild(title);
@@ -157,25 +156,22 @@ export default class Poll {
     /**
      * Called after lose focus on title input
      */
-    onBlurTitleInput({target: {value}}) {
-        this._data.title = value;
-    }
+    onBlur({target: {value, name}}) {
 
-    /**
-     * Called after lose focus on option input
-     */
-    onBlurOptionInput(key, {target: {value}}) {
-        if (value !== '') {
+        if (name === 'title') {
+            this._data[name] = value;
+        } else {
             let items = [...this._data.items];
-            const isFoundItem = items.find(item => item.key === key);
+            const isFoundItem = items.find(item => item.key === name);
 
             if (isFoundItem) {
-                items = items.map(item => {
-                    if (item.key === key) return {...item, value}
-                    return item
-                });
+                if (value) {
+                    items = items.map(item => item.key === name ? {...item, value} : item);
+                } else {
+                    items = items.filter(item => item.key !== name);
+                }
             } else {
-                items.push({key, value})
+                items.push({key: name, value})
             }
 
             this._data.items = items;
@@ -192,7 +188,7 @@ export default class Poll {
      * Called when user typing in option input, and call methods by keys
      */
     optionHandler(event) {
-        const [ENTER, BACKSPACE] = [13, 8]; // key codes
+        const BACKSPACE = 8; // key codes
 
         switch (event.keyCode) {      
             case BACKSPACE:

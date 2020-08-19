@@ -19,6 +19,14 @@
     border: 0;
     outline: none;
     background: transparent;
+    
+    /* for ios device to prevent zoom (16px minimum to prevent zoom) */
+    @media screen and (-webkit-min-device-pixel-ratio: 0) {
+        &,
+        &:focus {
+            font-size: 1.6rem;
+        }
+    }
 }
 
 .cdx-poll-wrap-option {

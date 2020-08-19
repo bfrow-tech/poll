@@ -3,7 +3,7 @@
   "publishConfig": { 
     "registry": "https://npm.pkg.github.com/bfrow-tech" 
   },
-  "version": "1.0.7",
+  "version": "1.0.8",
   "repository": "git://github.com/bfrow-tech/poll.git",
   "main": "./dist/bundle.js",
   "scripts": {
